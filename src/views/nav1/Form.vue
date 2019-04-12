@@ -2,19 +2,20 @@
 	<el-form ref="planForm" :model="planForm" :rules="rules2" label-width="120px"  style="margin:20px;width:60%;min-width:600px;">
 		<el-form-item label="计划等级" prop="planLevel">
 			<el-select v-model="planForm.planLevel" placeholder="请选择等级">
-				<el-option label="特急" value="veryImportant"></el-option>
-				<el-option label="紧急" value="important"></el-option>
-				<el-option label="常规" value="normal"></el-option>
-				<el-option label="从容" value="slow"></el-option>
+				<el-option label="特急" value="特急"></el-option>
+				<el-option label="紧急" value="紧急"></el-option>
+				<el-option label="常规" value="常规"></el-option>
+				<el-option label="从容" value="从容"></el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="计划分类" prop="planLabel">
 			<el-select v-model="planForm.planLabel" placeholder="请选择分类">
-				<el-option label="教学" value="teaching"></el-option>
-				<el-option label="科研" value="research"></el-option>
-				<el-option label="学生工作" value="studentWork"></el-option>
-				<el-option label="客户沟通" value="customerCommunication"></el-option>
-				<el-option label="会议" value="meeting"></el-option>
+				<el-option label="教学" value="教学"></el-option>
+				<el-option label="科研" value="科研"></el-option>
+				<el-option label="学生工作" value="学生工作"></el-option>
+				<el-option label="客户沟通" value="客户沟通"></el-option>
+				<el-option label="会议" value="会议"></el-option>
+				<el-option label="娱乐" value="娱乐"></el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="计划截止时间" >
@@ -131,10 +132,10 @@
 					if (valid) {
 						//_this.$router.replace('/table');
 						//NProgress.start();
-						this.planForm.createTime = new Date().getTime(),
-						this.planForm.completeTime = this.planForm.date1.getTime() + this.parseTime(this.planForm.date2),
-						this.planForm.remindTime = this.planForm.date3.getTime() + this.parseTime(this.planForm.date4),
-						console.log(this.planForm)
+						this.planForm.createTime = new Date().getTime();
+						this.planForm.completeTime = this.planForm.date1.getTime() + this.parseTime(this.planForm.date2);
+						this.planForm.remindTime = this.planForm.date3.getTime() + this.parseTime(this.planForm.date4);
+						console.log(this.planForm);
 						let opt = this.planForm;
 						api.createUser(opt).then(( {
 													  data
@@ -144,7 +145,7 @@
 								this.$message({
 									message: '创建成功',
 									type: 'success'
-								})
+								});
 								this.$refs[formName].resetFields()
 							}
 							else if(data.code === 409) {
@@ -165,7 +166,12 @@
 									message: '未知错误'
 								})
 							}
+						}).catch((err) => {
+							console.log(err);
 						})
+					} else {
+						console.log('Error Submit!!');
+						return false;
 					}
 				});
 			},
