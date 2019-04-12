@@ -4,8 +4,8 @@ import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
 import Table from './views/nav1/Table.vue'
-import Form from './views/nav1/Form.vue'
-import user from './views/nav1/user.vue'
+import CreatePlan from './views/nav1/CreatePlan.vue'
+import GetRecycleView from './views/nav1/GetRecycleView.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -39,8 +39,8 @@ let routes = [
         children: [
             { path: '/main', component: Main, name: '主页', hidden: true },
             { path: '/table', component: Table, name: 'Table' },
-            { path: '/form', component: Form, name: '创建计划' },
-            { path: '/user', component: user, name: '列表' },
+            { path: '/createPlan', component: CreatePlan, name: '创建计划' },
+            { path: '/getRecycleView', component: GetRecycleView, name:'回收站' },
         ]
     },
     {
