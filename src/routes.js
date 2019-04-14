@@ -10,6 +10,7 @@ import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
 import echarts from './views/charts/echarts.vue'
+import GetPlanView from './views/nav1/GetPlanView.vue'
 
 let routes = [
     {
@@ -41,6 +42,7 @@ let routes = [
             { path: '/table', component: Table, name: 'Table' },
             { path: '/createPlan', component: CreatePlan, name: '创建计划' },
             { path: '/getRecycleView', component: GetRecycleView, name:'回收站' },
+            { path: '/getPlanView', component: GetPlanView, name:'计划视图' },
         ]
     },
     {
