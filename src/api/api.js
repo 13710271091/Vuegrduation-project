@@ -29,12 +29,24 @@ export default {
         return instance.post('/plans/createPlan', data)
     },
     // 获取用户
-    getUser() {
-        return instance.get('/api/user')
+    getRecyclePlanList(data) {
+        return instance.post('/plans/getRecycleView',data)
     },
-    // 删除用户
-    delUser(data) {
-        return instance.post('/api/delUser', data)
+    // 删除计划
+    removePlan(data) {
+        return instance.post('/plans/deletePlan', data)
+    },
+    //还原计划
+    reductionPlan(data) {
+        return instance.post('/plans/reductionPlan', data)
+    },
+    //动态查询计划
+    getPlanListPage(data) {
+        return instance.post('/plans/dynamicQuery',data)
+    },
+    //回收计划
+    removeUser(data) {
+        return instance.post('/plans/recyclePlan',data)
     }
 }
 // export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
