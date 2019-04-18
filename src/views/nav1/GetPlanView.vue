@@ -24,7 +24,7 @@
 
         <!--列表-->
         <template>
-            <el-table :data="plans" highlight-current-row v-loading="loading" style="width: 100%;">
+            <el-table :data="plans" highlight-current-row  v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column type="index" width="80">
@@ -54,14 +54,14 @@
 
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-            <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+            <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量回收</el-button>
             <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
             </el-pagination>
         </el-col>
 
         <!--编辑界面-->
         <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
-            <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-form :model="editForm" label-width="80px"  ref="editForm">
                 <el-form-item label="计划等级" prop="planLevel">
                     <el-select v-model="editForm.planLevel" placeholder="请选择等级">
                         <el-option label="特急" value="特急"></el-option>
@@ -108,9 +108,9 @@
                     <el-col :span="10">
                         <el-form-item label="" label-width="0px" prop="date4">
                             <el-time-select type="date" v-model="editForm.date4" :picker-options="{
-							start: '09:00:00',
-							step: '00:30:00',
-							end: '22:00:00'
+							start: '09:00',
+							step: '00:30',
+							end: '22:00'
 						  }" placeholder="选择时间">
                             </el-time-select>
                         </el-form-item>
@@ -142,9 +142,6 @@
     export default {
         data() {
             return {
-                filters: {
-                    name: ''
-                },
                 plans: [],
                 total: 0,
                 page: 1,
@@ -153,11 +150,6 @@
 
                 editFormVisible: false,//编辑界面是否显示
                 editLoading: false,
-                editFormRules: {
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
-                    ]
-                },
                 //编辑界面数据
                 editForm: {
                     userId: JSON.parse(sessionStorage.getItem('user')).user_id,
@@ -173,22 +165,6 @@
                     createTime:'',
                     remindTime: '',
                     plan_recycle:false
-                },
-
-                addFormVisible: false,//新增界面是否显示
-                addLoading: false,
-                addFormRules: {
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
-                    ]
-                },
-                //新增界面数据
-                addForm: {
-                    name: '',
-                    sex: -1,
-                    age: 0,
-                    birth: '',
-                    addr: ''
                 },
                 selectForm:{
                     completeTime:'',
@@ -209,14 +185,13 @@
             },
             handleCurrentChange(val) {
                 this.page = val;
-                this.getUsers();
+                this.getPlans();
             },
             //获取计划列表
             getPlans(formName) {
                 this.listLoading = true;
                 this.selectForm.userId=JSON.parse(sessionStorage.getItem('user')).user_id;
                 let opt = this.selectForm;
-                console.log(this.planForm);
                 api.getPlanListPage(opt).then((res) => {
                     this.plans = res.data.data;
                     for(let i=0;i<this.plans.length;i++){
@@ -234,7 +209,7 @@
                     debugger
                     let para = {id: '' };
                     para.id = row.id;
-                    api.removeUser(para).then(() => {
+                    api.removePlan(para).then(() => {
                         this.listLoading = false;
                         //NProgress.done();
                         this.$message({
@@ -250,60 +225,48 @@
                 this.editFormVisible = true;
                 this.editForm = Object.assign({}, row);
             },
-            //显示新增界面
-            handleAdd: function () {
-                this.addFormVisible = true;
-                this.addForm = {
-                    name: '',
-                    sex: -1,
-                    age: 0,
-                    birth: '',
-                    addr: ''
-                };
-            },
             //编辑
             editSubmit: function () {
-                console.log(this.editForm);
                 this.$refs.editForm.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.editLoading = true;
+                            this.parseDate();
+                            console.log(this.editForm);
                             let para = Object.assign({}, this.editForm);
-                            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                            editUser(para).then((res) => {
-                                this.editLoading = false;
-                                this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
-                                });
+                            api.editPlan(para).then(( {
+                                                          data
+                                                      }) => {
+                                if (data.code === 0) {
+                                    this.editLoading = false;
+                                    this.$message({
+                                        message: '提交成功',
+                                        type: 'success'
+                                    });
+                                }
+                                else if(data.code === 409) {
+                                    this.$message({
+                                        message: '完成时间和提醒时间必须晚于创建时间',
+                                        type: 'info'
+                                    })
+                                }
+                                else if(data.code === 411) {
+                                    this.$message({
+                                        message: '提醒时间必须晚于创建时间',
+                                        type: 'info'
+                                    })
+                                }
                                 this.$refs['editForm'].resetFields();
+                                this.editLoading=false;
                                 this.editFormVisible = false;
-                                this.getUsers();
-                            });
-                        });
-                    }
-                });
-            },
-            //新增
-            addSubmit: function () {
-                this.$refs.addForm.validate((valid) => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addLoading = true;
-                            //NProgress.start();
-                            let para = Object.assign({}, this.addForm);
-                            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                            addUser(para).then((res) => {
-                                this.addLoading = false;
-                                //NProgress.done();
+                                this.getPlans();
+                            }).catch((err) => {
+                                this.editLoading=false;
                                 this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
+                                    message: '未知错误',
+                                    type: 'error'
                                 });
-                                this.$refs['addForm'].resetFields();
-                                this.addFormVisible = false;
-                                this.getUsers();
-                            });
+                            })
                         });
                     }
                 });
@@ -311,26 +274,68 @@
             selsChange: function (sels) {
                 this.sels = sels;
             },
+            //编辑框日期时间处理函数
+            parseDate:function() {
+               let date1 = new Date(new Date(this.editForm.completeTime).getFullYear(),new Date(this.editForm.completeTime).getMonth(),new Date(this.editForm.completeTime).getDate(),0,0,0)
+               let time1 = new Date(this.editForm.completeTime).getTime()-date1.getTime();
+               let date2 = new Date(new Date(this.editForm.remindTime).getFullYear(),new Date(this.editForm.remindTime).getMonth(),new Date(this.editForm.remindTime).getDate(),0,0,0)
+               let time2 = new Date(this.editForm.remindTime).getTime()-date2.getTime();
+                debugger
+                console.log(this.editForm);
+               if (this.editForm.date1 === undefined && this.editForm.date2 !== undefined) {
+                    this.editForm.completeTime = date1.getTime()+ this.parseEditTime(this.editForm.date2);
+               }
+               if(this.editForm.date1 !== undefined && this.editForm.date2 === undefined) {
+                   this.editForm.completeTime = this.editForm.date1.getTime() + time1;
+               }
+               if (this.editForm.date1 !== undefined && this.editForm.date2 !== undefined) {
+                   this.editForm.completeTime = new Date(this.editForm.date1).getTime()+this.parseEditTime(this.editForm.date2);
+               }
+                if(this.editForm.date1 === undefined && this.editForm.date2 === undefined) {
+                    this.editForm.completeTime = new Date(this.editForm.completeTime).getTime()
+                }
+                if (this.editForm.date3 === undefined && this.editForm.date4 !== undefined) {
+                    this.editForm.remindTime = date2.getTime()+ this.parseEditTime(this.editForm.date4);
+                }
+                if(this.editForm.date3 !== undefined && this.editForm.date4 === undefined) {
+                    this.editForm.remindTime = new Date(this.editForm.date3).getTime()+ time2;
+                }
+                if(this.editForm.date3 === undefined && this.editForm.date4 === undefined) {
+                    this.editForm.remindTime = new Date(this.editForm.remindTime).getTime()
+                }
+                if (this.editForm.date3 !== undefined && this.editForm.date4 !== undefined) {
+                    this.editForm.remindTime = new Date(this.editForm.date3).getTime()+this.parseEditTime(this.editForm.date4);
+                }
+                this.editForm.createTime = new Date(this.editForm.createTime).getTime();
+                console.log(this.editForm);
+            },
+            //
+            parseEditTime:function(time) {
+                let str=time.split(':');
+                return (Number(str[0])*60+Number(str[1]))*60*1000;
+            },
             //批量删除
             batchRemove: function () {
-                var ids = this.sels.map(item => item.id).toString();
-                this.$confirm('确认删除选中记录吗？', '提示', {
+                let ids = this.sels.map(item => item.id).toString();
+                this.$confirm('确认回收选中记录吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
                     this.listLoading = true;
-                    //NProgress.start();
-                    let para = { ids: ids };
-                    batchRemoveUser(para).then((res) => {
+                    let para = { plan_ids: ids,userId: JSON.parse(sessionStorage.getItem('user')).user_id};
+                    api.batchRecyclePlan(para).then((res) => {
                         this.listLoading = false;
-                        //NProgress.done();
                         this.$message({
-                            message: '删除成功',
+                            message: '回收成功',
                             type: 'success'
                         });
-                        this.getUsers();
+                        this.getPlans();
                     });
                 }).catch(() => {
-
+                    this.listLoading = true;
+                    this.$message({
+                        message: '未知错误',
+                        type: 'info'
+                    });
                 });
             }
         },

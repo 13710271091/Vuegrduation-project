@@ -80,7 +80,7 @@
                     let para = {id: '' };
                     para.id = row.id;
                     console.log(para);
-                    api.removePlan(para).then((res) => {
+                    api.deletePlan(para).then((res) => {
                         this.getPlan();
                         this.loading = false;
                         //NProgress.done();

@@ -51,9 +51,9 @@
 					<el-time-select type="date"
 							v-model="planForm.date4"
 							:picker-options="{
-							start: '09:00:00',
-							step: '00:30:00',
-							end: '22:00:00'
+							start: '09:00',
+							step: '00:30',
+							end: '22:00'
 						  }"
 							placeholder="选择时间">
 					</el-time-select>
@@ -140,7 +140,6 @@
 						api.createUser(opt).then(( {
 													  data
 												  }) => {
-							//NProgress.done();
 							if (data.code === 0) {
 								this.$message({
 									message: '创建成功',
