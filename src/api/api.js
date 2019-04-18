@@ -33,7 +33,7 @@ export default {
         return instance.post('/plans/getRecycleView',data)
     },
     // 删除计划
-    removePlan(data) {
+    deletePlan(data) {
         return instance.post('/plans/deletePlan', data)
     },
     //还原计划
@@ -45,8 +45,24 @@ export default {
         return instance.post('/plans/dynamicQuery',data)
     },
     //回收计划
-    removeUser(data) {
+    removePlan(data) {
         return instance.post('/plans/recyclePlan',data)
+    },
+    //更改计划
+    editPlan(data) {
+        return instance.post('/plans/updatePlan',data)
+    },
+    //批量回收计划
+    batchRecyclePlan(data) {
+        return instance.post('/plans/batchRecyclePlan',data)
+    },
+    //获取过期计划
+    getOverDuePlan(data) {
+        return instance.post('/plans/getOverDuePlan',data)
+    },
+    //批量删除计划
+    batchDeletePlan(data) {
+        return instance.post('/plans/batchDeletePlan',data)
     }
 }
 // export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
