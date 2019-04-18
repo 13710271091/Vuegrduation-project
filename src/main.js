@@ -18,14 +18,12 @@ Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-//NProgress.configure({ showSpinner: false });
 
 const router = new VueRouter({
   routes
 })
 
 router.beforeEach((to, from, next) => {
-  //NProgress.start();
   if (to.path === '/login') {
     sessionStorage.removeItem('user');
   }
@@ -38,16 +36,10 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(transition => {
-NProgress.done();
-});
 
 new Vue({
-  //el: '#app',
-  //template: '<App/>',
   router,
   store,
-  //components: { App }
   render: h => h(App)
 }).$mount('#app')
 

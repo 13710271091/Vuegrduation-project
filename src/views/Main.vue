@@ -1,13 +1,11 @@
 <template>
-	<section>
-		main
-	</section>
+
 </template>
 
 <script>
-	export default {
-	}
-
+    export default {
+        name: "Main.vue"
+    }
 </script>
 
 <style scoped>
