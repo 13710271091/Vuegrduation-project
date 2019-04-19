@@ -63,6 +63,18 @@ export default {
     //批量删除计划
     batchDeletePlan(data) {
         return instance.post('/plans/batchDeletePlan',data)
+    },
+    //获取报表标签
+    getLastWeekLabel(data) {
+        return instance.post('/charts/labelChart',data)
+    },
+    //获取报表等级数据
+    getLastWeekLevel(data) {
+        return instance.post('/charts/levelChart',data)
+    },
+    //获取上周完成情况数据
+    getLastWeekStatus(data) {
+        return instance.post('/charts/statusChart',data)
     }
 }
 // export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
