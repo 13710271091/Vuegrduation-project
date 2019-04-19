@@ -75,6 +75,10 @@ export default {
     //获取上周完成情况数据
     getLastWeekStatus(data) {
         return instance.post('/charts/statusChart',data)
+    },
+    //获取验证码
+    getIdentifyCode(data) {
+        return instance.post('/users/registerIdentifyCode',data)
     }
 }
 // export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };

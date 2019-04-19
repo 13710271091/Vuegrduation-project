@@ -17,7 +17,6 @@
 
 <script>
   import api from '../api/api';
-  //import NProgress from 'nprogress'
   export default {
     name: 'login',
     data() {
@@ -60,7 +59,6 @@
                   message: '登录成功',
                   type: 'success'
                 })
-                debugger
                 sessionStorage.setItem('user', JSON.stringify(user));
                  this.$router.push({ path: '/getPlanView' });
               }

@@ -10,6 +10,10 @@
         <el-form-item prop="checkPass">
             <el-input type="password" v-model="registerForm.checkPass" auto-complete="off" placeholder="确认密码"></el-input>
         </el-form-item>
+        <el-form-item >
+            <el-input type="identifyCode" v-model="registerForm.identifyCode" auto-complete="off" placeholder="验证码" style="width:69%;display:inline-block"></el-input>
+            <el-button type="primary" style="display: inline-block" @click="identifyCode">获取验证码</el-button>
+        </el-form-item>
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;" @click="handleRegister('registerForm')" >注册</el-button>
             <router-link to='login'><label>已有账号</label></router-link>
@@ -43,7 +47,8 @@
                 registerForm: {
                     email: '',
                     user_password: '',
-                    checkPass: ''
+                    checkPass: '',
+                    identifyCode:''
                 },
                 rules: {
                     email: [{
@@ -76,7 +81,12 @@
                             validator: validatePass2,
                             trigger: 'blur'
                         }
-                    ]
+                    ],
+                    identifyCode:{
+                        required: true,
+                        message: '请输入验证码',
+                        trigger: 'blur'
+                    }
                 },
             };
         },
@@ -92,10 +102,22 @@
                                 alert("注册成功,账号:"+data.data)
                                 //  Register 设计为了 Login 的组件，所以成功跳转时刷新一次页面
                                 this.$router.push('/login')
-                            } else {
+                            } else if(data.code === 412){
+                                this.$message({
+                                    type: 'error',
+                                    message: '验证码错误'
+                                })
+                            }
+                            else if(data.code === 413){
                                 this.$message({
                                     type: 'info',
-                                    message: '此邮箱已被使用'
+                                    message: '验证码尚未发送'
+                                })
+                            }
+                            else{
+                                this.$message({
+                                    type: 'error',
+                                    message: '未知错误'
                                 })
                             }
                         }).catch((err) => {
@@ -106,8 +128,46 @@
                         return false;
                     }
                 });
+            },
+            identifyCode(){
+                if(this.registerForm.email === undefined) {
+                    this.$message({
+                        type: 'info',
+                        message: '请输入邮箱地址'
+                    })
+                } else {
+                    let para = {
+                        email: this.registerForm.email
+                    }
+                    api.getIdentifyCode(para).then(({
+                                                        data
+                                                    }) => {
+                        if (data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: '验证码发送成功'
+                            })
+                        }
+                        else if(data.code === 404)
+                        {
+                            this.$message({
+                                type: 'info',
+                                message: '邮箱格式错误'
+                            })
+                        }
+                        else if(data.code === 408)
+                        {
+                            this.$message({
+                                type: 'info',
+                                message: '此邮箱已被使用'
+                            })
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+                }
             }
-        }
+        },
     }
 </script>
 
