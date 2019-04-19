@@ -2,10 +2,13 @@
     <section class="chart-container">
         <el-row>
             <el-col :span="12">
-                <div id="chartColumn" style="width:100%; height:400px;"></div>
+                <div id="chartLabel" style="width:100%; height:400px;"></div>
             </el-col>
             <el-col :span="12">
-                <div id="chartPie" style="width:100%; height:400px;"></div>
+                <div id="chartLevel" style="width:100%; height:400px;"></div>
+            </el-col>
+            <el-col :span="12">
+                <div id="chartStatus" style="width:100%; height:400px; margin-left: 400px"></div>
             </el-col>
         </el-row>
     </section>
@@ -13,76 +16,153 @@
 
 <script>
     import echarts from 'echarts'
-
+    import api from '../../api/api';
     export default {
         data() {
             return {
-                chartColumn: null,
-                chartPie: null
+                chartLabel: null,
+                chartLevel: null,
+                chartStatus:null,
+                labelX:[],
+                labelSer:[],
+                levelX:[],
+                levelSer:[],
+                statusX:[],
+                statusSer:[]
             }
         },
 
         methods: {
-            drawColumnChart() {
-                this.chartColumn = echarts.init(document.getElementById('chartColumn'));
-                this.chartColumn.setOption({
-                  title: { text: 'Column Chart' },
-                  tooltip: {},
-                  xAxis: {
-                      data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-                  },
-                  yAxis: {},
-                  series: [{
-                      name: '销量',
-                      type: 'bar',
-                      data: [5, 20, 36, 10, 10, 20]
-                    }]
-                });
-            },
-            drawPieChart() {
-                this.chartPie = echarts.init(document.getElementById('chartPie'));
-                this.chartPie.setOption({
-                    title: {
-                        text: 'Pie Chart',
-                        subtext: '纯属虚构',
-                        x: 'center'
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{a} <br/>{b} : {c} ({d}%)"
-                    },
-                    legend: {
-                        orient: 'vertical',
-                        left: 'left',
-                        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-                    },
-                    series: [
-                        {
-                            name: '访问来源',
-                            type: 'pie',
-                            radius: '55%',
-                            center: ['50%', '60%'],
-                            data: [
-                                { value: 335, name: '直接访问' },
-                                { value: 310, name: '邮件营销' },
-                                { value: 234, name: '联盟广告' },
-                                { value: 135, name: '视频广告' },
-                                { value: 1548, name: '搜索引擎' }
-                            ],
-                            itemStyle: {
-                                emphasis: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            drawLabelChart() {
+                let para = {user_id:JSON.parse(sessionStorage.getItem('user')).user_id};
+                api.getLastWeekLabel(para).then(( {data}) => {
+                    for(var key in data.data) {
+                        this.labelX.push(key);
+                        this.labelSer.push({value:Number(data.data[key]),name:key});
+                    }
+                    this.chartLabel = echarts.init(document.getElementById('chartLabel'));
+                    this.chartLabel.setOption({
+                        title: {
+                            text: '计划标签',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: this.labelX,
+                        },
+                        series: [
+                            {
+                                name: '计划标签',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: this.labelSer,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
                                 }
                             }
-                        }
-                    ]
+                        ]
+                    });
+                });
+            },
+            drawLevelChart() {
+                let para = {user_id:JSON.parse(sessionStorage.getItem('user')).user_id};
+                api.getLastWeekLevel(para).then(( {data}) => {
+                    for(var key in data.data) {
+                        this.levelX.push(key);
+                        this.levelSer.push({value:Number(data.data[key]),name:key});
+                    }
+                    this.chartLevel = echarts.init(document.getElementById('chartLevel'));
+                    this.chartLevel.setOption({
+                        title: {
+                            text: '计划等级',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: this.levelX,
+                        },
+                        series: [
+                            {
+                                name: '计划等级',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: this.levelSer,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    });
+                });
+            },
+            drawStatusChart() {
+                let para = {user_id:JSON.parse(sessionStorage.getItem('user')).user_id};
+                api.getLastWeekStatus(para).then(( {data}) => {
+                    for(var key in data.data) {
+                        this.statusX.push(key);
+                        this.statusSer.push({value:Number(data.data[key]),name:key});
+                    }
+                    console.log(this.statusX);
+                    console.log(this.statusSer);
+
+                    this.chartStatus = echarts.init(document.getElementById('chartStatus'));
+                    this.chartStatus.setOption({
+                        title: {
+                            text: '计划完成度',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: this.statusX,
+                        },
+                        series: [
+                            {
+                                name: '计划等级',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: this.statusSer,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    });
                 });
             },
             drawCharts() {
-                this.drawColumnChart()
-                this.drawPieChart()
+                this.drawLabelChart()
+                this.drawLevelChart()
+                this.drawStatusChart()
             },
         },
 
