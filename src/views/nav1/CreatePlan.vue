@@ -1,7 +1,7 @@
 <template>
 	<el-form ref="planForm" :model="planForm" :rules="rules2" label-width="120px"  style="margin:20px;width:60%;min-width:600px;">
 		<el-form-item label="计划等级" prop="planLevel">
-			<el-select v-model="planForm.planLevel" placeholder="请选择等级">
+			<el-select v-model="planForm.planLevel" placeholder="请选择等级" >
 				<el-option label="特急" value="特急"></el-option>
 				<el-option label="紧急" value="紧急"></el-option>
 				<el-option label="常规" value="常规"></el-option>
@@ -16,6 +16,7 @@
 				<el-option label="客户沟通" value="客户沟通"></el-option>
 				<el-option label="会议" value="会议"></el-option>
 				<el-option label="娱乐" value="娱乐"></el-option>
+                <el-option label="其他" value="其他"></el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="计划截止时间" >
@@ -90,9 +91,9 @@
 					date3:'',
 					date4:'',
 					planContent: '',
-					planLabel: '',
-					planLevel: '',
-					planStatus:'',
+					planLabel: '其他',
+					planLevel: '常规',
+					planStatus:'未开始',
 					completeTime:'',
 					createTime:'',
 					remindTime: '',
