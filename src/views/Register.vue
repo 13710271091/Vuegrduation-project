@@ -30,7 +30,7 @@
             // 密码安全性要求
             let validatePass1 = (rule, value, callback) => {
                 // 6-16位, 数字, 字母, 字符至少包含两种, 同时不能包含中文和空格
-                let reg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$){8,16}$/;
+                let reg =/([a-zA-Z0-9!@#$%^&*()_?<>{}]){8,16}/;
                 if (!reg.test(value)) {
                     callback(new Error('密码长度需8-16位'))
                 } else {
@@ -112,6 +112,12 @@
                                 this.$message({
                                     type: 'info',
                                     message: '验证码尚未发送'
+                                })
+                            }
+                            else if(data.code === 406 || data.code === 407){
+                                this.$message({
+                                    type: 'info',
+                                    message: '密码长度必须为8-16位'
                                 })
                             }
                             else{
