@@ -198,9 +198,8 @@
                         this.plans[i].remindTime = this.parseTime(this.plans[i].remindTime);
                         this.plans[i].completeTime = this.parseTime(this.plans[i].completeTime)
                     }
-                    if (this.selectForm.completeTime !== undefined || this.selectForm.planStatus !== undefined) {
-                        this.$refs[formName].resetFields();
-                    }
+                    this.selectForm.completeTime='';
+                    this.selectForm.planStatus='';
                 });
                 this.listLoading = false;
             },

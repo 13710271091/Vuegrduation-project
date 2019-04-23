@@ -199,7 +199,8 @@
                         this.plans[i].remindTime = this.parseTime(this.plans[i].remindTime);
                         this.plans[i].completeTime = this.parseTime(this.plans[i].completeTime)
                     }
-                    this.$refs[formName].resetFields();
+                    this.selectForm.completeTime='';
+                    this.selectForm.planStatus='';
                 });
                 this.listLoading = false;
             },

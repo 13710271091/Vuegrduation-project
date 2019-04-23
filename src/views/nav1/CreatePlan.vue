@@ -12,6 +12,7 @@
 			<el-select v-model="planForm.planLabel" placeholder="请选择分类">
 				<el-option label="教学" value="教学"></el-option>
 				<el-option label="科研" value="科研"></el-option>
+				<el-option label="行程" value="行程"></el-option>
 				<el-option label="学生工作" value="学生工作"></el-option>
 				<el-option label="客户沟通" value="客户沟通"></el-option>
 				<el-option label="会议" value="会议"></el-option>
@@ -91,7 +92,7 @@
 					date3:'',
 					date4:'',
 					planContent: '',
-					planLabel: '其他',
+					planLabel: '行程',
 					planLevel: '常规',
 					planStatus:'未开始',
 					completeTime:'',

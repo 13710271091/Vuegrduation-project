@@ -3,7 +3,7 @@ import axios from 'axios';
 let base = '';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-axios.defaults.baseURL='http://localhost:9090'
+axios.defaults.baseURL='http://120.79.244.183:9090'
 axios.default.timeout = 5000
 
 const instance = axios.create();
